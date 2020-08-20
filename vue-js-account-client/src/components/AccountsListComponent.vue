@@ -1,8 +1,27 @@
 <template>
   <div class="container">
     <br />
-    <h4>Accounts List</h4>
-    <br /><br />
+    <h4><strong>Accounts List</strong></h4>
+    <br />
+    <div class="col-md-4" id="searchUsername">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by username"
+          v-model="username"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            @click="searchUsername"
+          >
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
     <table class="table table-striped">
       <thead style="text-align: center;">
         <tr>
@@ -27,16 +46,12 @@
           <td>{{ account.companyName }}</td>
           <td>{{ account.country }}</td>
           <td>{{ account.language }}</td>
-          <td>{{ account.active }}</td>
           <td>{{ account.role }}</td>
+          <td>{{ account.active }}</td>
           <td>
-            <button
-              style="margin-right: 10px;"
-              class="btn btn-warning"
-              @click="editAccountClicked(account.id)"
-            >
-              <i class="fas fa-edit"></i>
-            </button>
+            <a :href="'/accounts/' + account.id" class="btn btn-warning"
+              ><i class="fas fa-edit"></i
+            ></a>
             <button
               class="btn btn-danger"
               @click="deleteAccountClicked(account.id)"
@@ -59,11 +74,26 @@ export default {
     return {
       accounts: [],
       message: null,
+      username: "",
     };
   },
   methods: {
-    retrieveTutorials() {
+    retrieveAccounts() {
       AccountDataService.getAll()
+        .then((response) => {
+          this.accounts = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+    refreshList() {
+      this.retrieveAccounts();
+    },
+
+    searchUsername() {
+      AccountDataService.findByUsername(this.username)
         .then((response) => {
           this.accounts = response.data;
         })
@@ -73,7 +103,17 @@ export default {
     },
   },
   mounted() {
-    this.retrieveTutorials();
+    this.retrieveAccounts();
   },
 };
 </script>
+
+<style>
+h4 {
+  text-align: center;
+}
+
+#searchUsername {
+  float: right;
+}
+</style>

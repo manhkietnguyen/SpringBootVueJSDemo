@@ -91,4 +91,16 @@ public class AccountServiceImpl implements AccountService {
         return accountConverter
                 .toDTO(accountRepository.findOneByUsername(username));
     }
+
+    @Override
+    public List<AccountDTO> findByUsername(String username) {
+        List<AccountDTO> accountDTOs = new ArrayList<>();
+        List<Account> accounts = accountRepository.findByUsernameContaining(username);
+        for (Account account : accounts) {
+            AccountDTO dto = new AccountDTO();
+            dto = accountConverter.toDTO(account);
+            accountDTOs.add(dto);
+        }
+        return accountDTOs;
+    }
 }

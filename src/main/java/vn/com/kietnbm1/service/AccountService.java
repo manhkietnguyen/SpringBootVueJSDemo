@@ -14,5 +14,7 @@ public interface AccountService {
 
     void deleteById(long id);
 
+    List<AccountDTO> findByUsername(String username);
+    
     AccountDTO findOneByUsername(String username);
 }

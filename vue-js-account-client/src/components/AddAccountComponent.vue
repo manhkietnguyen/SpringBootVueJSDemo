@@ -1,106 +1,133 @@
 <template>
   <div class="submit-form">
-    <h4>Add Account</h4>
     <br />
-    <div v-if="error">
-      <div class="alert alert-danger">{{errorMessage}}</div>
+    <h4><strong>Add Account</strong></h4>
+    <br />
+    <div v-if="error" class="errorAl">
+      <div class="alert alert-danger" style="width: 400px">
+        {{ errorMessage }}
+      </div>
     </div>
     <div v-if="success">
-      <div class="alert alert-success">{{successMessage}}</div>
+      <div class="alert alert-success" id="successAl">{{ successMessage }}</div>
     </div>
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input
-        type="text"
-        name="username"
-        class="form-control"
-        id="username"
-        required
-        v-model="account.username"
-      />
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            name="username"
+            class="form-control"
+            id="username"
+            required
+            v-model="account.username"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            id="password"
+            required
+            v-model="account.password"
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            class="form-control"
+            id="confirmPassword"
+            required
+            v-model="account.confirmPassword"
+          />
+        </div>
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input
+            type="text"
+            name="firstName"
+            class="form-control"
+            id="firstName"
+            required
+            v-model="account.firstName"
+          />
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            class="form-control"
+            id="lastName"
+            required
+            v-model="account.lastName"
+          />
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="companyName">Company Name</label>
+          <input
+            type="text"
+            name="companyName"
+            class="form-control"
+            id="companyName"
+            required
+            v-model="account.companyName"
+          />
+        </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input
+            type="text"
+            name="country"
+            class="form-control"
+            id="country"
+            required
+            v-model="account.country"
+          />
+        </div>
+        <div class="form-group">
+          <label for="language">Language</label>
+          <select
+            name="language"
+            id="language"
+            v-model="account.language"
+            class="form-control"
+          >
+            <option disabled value="">---Select Language---</option>
+            <option value="Viet Nam">Viet Nam</option>
+            <option value="Japan">Japan</option>
+            <option value="China">China</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select
+            name="role"
+            id="role"
+            v-model="account.role"
+            class="form-control"
+          >
+            <option disabled value="">---Select Role---</option>
+            <option value="ROLE_ADMIN">ADMIN</option>
+            <option value="ROLE_USER">USER</option>
+          </select>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        class="form-control"
-        id="password"
-        required
-        v-model="account.password"
-      />
+
+    <div class="submitBtn">
+      <button @click="saveAccount" class="btn btn-success">
+        <i class="fa fa-check-square"></i> Submit
+      </button>
     </div>
-    <div class="form-group">
-      <label for="confirmPassword">Confirm Password</label>
-      <input
-        type="password"
-        name="confirmPassword"
-        class="form-control"
-        id="confirmPassword"
-        required
-        v-model="account.confirmPassword"
-      />
-    </div>
-    <div class="form-group">
-      <label for="firstName">First Name</label>
-      <input
-        type="text"
-        name="firstName"
-        class="form-control"
-        id="firstName"
-        required
-        v-model="account.firstName"
-      />
-    </div>
-    <div class="form-group">
-      <label for="lastName">Last Name</label>
-      <input
-        type="text"
-        name="lastName"
-        class="form-control"
-        id="lastName"
-        required
-        v-model="account.lastName"
-      />
-    </div>
-    <div class="form-group">
-      <label for="companyName">Company Name</label>
-      <input
-        type="text"
-        name="companyName"
-        class="form-control"
-        id="companyName"
-        required
-        v-model="account.companyName"
-      />
-    </div>
-    <div class="form-group">
-      <label for="country">Country</label>
-      <input
-        type="text"
-        name="country"
-        class="form-control"
-        id="country"
-        required
-        v-model="account.country"
-      />
-    </div>
-    <div class="form-group">
-      <label for="language">Language</label>
-      <input
-        type="text"
-        name="language"
-        class="form-control"
-        id="language"
-        required
-        v-model="account.language"
-      />
-    </div>
-    <div class="form-group">
-      <label for="role">Role</label>
-      <input type="text" name="role" class="form-control" id="role" required v-model="account.role" />
-    </div>
-    <button @click="saveAccount" class="btn btn-success">Submit</button>
+    <br />
   </div>
 </template>
 
@@ -141,6 +168,8 @@ export default {
         this.error = true;
         this.errorMessage = "Please fill out the form";
         return false;
+      } else {
+        return true;
       }
     },
     saveAccount() {
@@ -156,24 +185,23 @@ export default {
         role: this.account.role,
         active: "Yes",
       };
-
-      this.validateAccount();
-
-      AccountDataService.create(data)
-        .then((response) => {
-          if (response.status == 400) {
-            this.error = true;
-            this.success = false;
-            this.errorMessage = response.data.errorMessage;
-          } else if (response.status == 201) {
-            this.success = true;
-            this.error = false;
-            this.successMessage = response.data.successMessage;
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      if (this.validateAccount()) {
+        AccountDataService.create(data)
+          .then((response) => {
+            if (response.status == 200) {
+              this.error = true;
+              this.success = false;
+              this.errorMessage = response.data.errorMessage;
+            } else if (response.status == 201) {
+              this.success = true;
+              this.error = false;
+              this.successMessage = response.data.successMessage;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     },
     newAccount() {
       this.account = {};
@@ -181,3 +209,15 @@ export default {
   },
 };
 </script>
+
+<style>
+h4 {
+  text-align: center;
+}
+.submitBtn {
+  text-align: center;
+}
+.errorAl {
+  text-align: center;
+}
+</style>

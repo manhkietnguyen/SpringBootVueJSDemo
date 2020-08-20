@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.com.kietnbm1.dto.AccountDTO;
@@ -27,23 +28,32 @@ public class AccountController {
     AccountService accountService;
 
     @GetMapping("/accounts")
-    public List<AccountDTO> getAllAccounts() {
-        return accountService.findAll();
+    public List<AccountDTO> getAllAccounts(
+            @RequestParam(value = "username", required = false) String username) {
+        if (username == null) {
+            return accountService.findAll();
+        } else {
+            return accountService.findByUsername(username);
+        }
     }
 
     @PostMapping("/accounts")
     public ResponseEntity<AccountDTO> createAccount(
             @RequestBody AccountDTO accountDTO) {
         try {
-            if (accountService.findOneByUsername(accountDTO.getUsername()) != null) {
+            if (accountService
+                    .findOneByUsername(accountDTO.getUsername()) != null) {
                 accountDTO.setErrorMessage("This Account has been existed!");
-                return new ResponseEntity<>(accountDTO, HttpStatus.BAD_REQUEST);
-            } else if (accountDTO.getPassword().equals(accountDTO.getConfirmPassword()) == false) {
-                accountDTO.setErrorMessage("Password and Confirm Password do not match!");
-                return new ResponseEntity<>(accountDTO, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(accountDTO, HttpStatus.OK);
+            } else if (accountDTO.getPassword()
+                    .equals(accountDTO.getConfirmPassword()) == false) {
+                accountDTO.setErrorMessage(
+                        "Password and Confirm Password do not match!");
+                return new ResponseEntity<>(accountDTO, HttpStatus.OK);
             } else {
                 AccountDTO createdAccount = accountService.save(accountDTO);
-                createdAccount.setSuccessMessage("Create Account Successfully!");
+                createdAccount
+                        .setSuccessMessage("Create Account Successfully!");
                 return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
             }
         } catch (Exception e) {
@@ -88,7 +98,8 @@ public class AccountController {
     }
 
     @GetMapping("/accounts/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable("id") long id) {
+    public ResponseEntity<AccountDTO> getAccountById(
+            @PathVariable("id") long id) {
         AccountDTO accountData = accountService.findOneById(id);
         if (accountData != null) {
             return new ResponseEntity<>(accountData, HttpStatus.OK);

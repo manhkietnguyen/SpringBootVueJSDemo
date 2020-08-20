@@ -12,7 +12,7 @@
           <a href="/accounts" class="nav-link">Accounts</a>
         </li>
         <li class="nav-item active">
-          <a href="/add" class="nav-link">Add</a>
+          <a href="/addAccount" class="nav-link">Add</a>
         </li>
       </ul>
     </nav>
@@ -31,4 +31,10 @@ export default {
 <style>
 @import url(https://unpkg.com/bootstrap@4.1.0/dist/css/bootstrap.min.css);
 @import url(https://use.fontawesome.com/releases/v5.6.3/css/all.css);
+body {
+  background-color: gray;
+}
+.container {
+  background-color: white;
+}
 </style>
