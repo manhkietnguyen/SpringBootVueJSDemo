@@ -23,7 +23,7 @@ public class AccountConverter {
         account.setLanguage(dto.getLanguage());
         if (dto.getActive().equals("Yes")) {
             account.setActive(true);
-        } else {
+        } else if (dto.getActive().equals("No")){
             account.setActive(false);
         }
         return account;

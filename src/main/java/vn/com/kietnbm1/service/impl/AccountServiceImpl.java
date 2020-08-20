@@ -79,11 +79,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteById(long id) {
-        Account account = accountRepository.findOneById(id);
-        if (account != null) {
-            accountRepository.deleteById(id);
-        }
+    public void delete(AccountDTO accountDTO) {
+        Account account = accountRepository.findOneById(accountDTO.getId());
+        accountRepository.delete(account);
     }
 
     @Override
@@ -103,4 +101,5 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountDTOs;
     }
+
 }

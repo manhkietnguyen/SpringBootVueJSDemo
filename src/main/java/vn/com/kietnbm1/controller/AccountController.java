@@ -29,7 +29,7 @@ public class AccountController {
 
     @GetMapping("/accounts")
     public List<AccountDTO> getAllAccounts(
-            @RequestParam(value = "username", required = false) String username) {
+            @RequestParam(required = false) String username) {
         if (username == null) {
             return accountService.findAll();
         } else {
@@ -74,6 +74,7 @@ public class AccountController {
             accountData.setLanguage(accountDTO.getLanguage());
             accountData.setRole(accountDTO.getRole());
             accountData.setActive(accountDTO.getActive());
+            accountData.setSuccessMessage("Account was updated successfully!");
             return new ResponseEntity<>(accountService.save(accountData),
                     HttpStatus.OK);
         } else {
@@ -87,12 +88,13 @@ public class AccountController {
         try {
             AccountDTO accountData = accountService.findOneById(id);
             if (accountData != null) {
-                accountService.deleteById(id);
+                accountService.delete(accountData);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

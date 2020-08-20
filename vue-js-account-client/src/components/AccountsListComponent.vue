@@ -1,8 +1,11 @@
 <template>
-  <div class="container">
+  <div class="container" id="listContainer">
     <br />
     <h4><strong>Accounts List</strong></h4>
     <br />
+    <div v-if="success">
+      <div class="alert alert-success" style="width: 400px;">{{ message }}</div>
+    </div>
     <div class="col-md-4" id="searchUsername">
       <div class="input-group mb-3">
         <input
@@ -49,13 +52,13 @@
           <td>{{ account.role }}</td>
           <td>{{ account.active }}</td>
           <td>
-            <a :href="'/accounts/' + account.id" class="btn btn-warning"
+            <a
+              :href="'/accounts/' + account.id"
+              class="btn btn-warning"
+              style="margin-right: 10px;"
               ><i class="fas fa-edit"></i
             ></a>
-            <button
-              class="btn btn-danger"
-              @click="deleteAccountClicked(account.id)"
-            >
+            <button class="btn btn-danger" @click="deleteAccount(account.id)">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
@@ -67,14 +70,16 @@
 
 <script>
 import AccountDataService from "../services/AccountDataService";
+import App from "../App";
 
 export default {
   name: "accounts-list",
   data() {
     return {
       accounts: [],
-      message: null,
+      message: App.globalMessage,
       username: "",
+      success: App.globalSuccess,
     };
   },
   methods: {
@@ -101,6 +106,14 @@ export default {
           console.log(e);
         });
     },
+    deleteAccount(id) {
+      AccountDataService.delete(id).then((response) => {
+        console.log(response.data);
+        this.refreshList();
+        this.success = true;
+        this.message = "Delete Account Successfully!";
+      });
+    },
   },
   mounted() {
     this.retrieveAccounts();
@@ -115,5 +128,9 @@ h4 {
 
 #searchUsername {
   float: right;
+}
+
+#listContainer {
+  height: 1000px;
 }
 </style>

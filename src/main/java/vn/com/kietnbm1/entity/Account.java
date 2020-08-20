@@ -1,6 +1,5 @@
 package vn.com.kietnbm1.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,8 +43,8 @@ public class Account {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", updatable = false)
     private Role role;
 
     public Account() {

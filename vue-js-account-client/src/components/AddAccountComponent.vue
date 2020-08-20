@@ -2,14 +2,15 @@
   <div class="submit-form">
     <br />
     <h4><strong>Add Account</strong></h4>
-    <br />
-    <div v-if="error" class="errorAl">
-      <div class="alert alert-danger" style="width: 400px">
+    <div v-if="error">
+      <div class="alert alert-danger" style="width: 400px;">
         {{ errorMessage }}
       </div>
     </div>
     <div v-if="success">
-      <div class="alert alert-success" id="successAl">{{ successMessage }}</div>
+      <div class="alert alert-success" style="width: 400px;">
+        {{ successMessage }}
+      </div>
     </div>
     <div class="row">
       <div class="col-6">
@@ -83,14 +84,18 @@
         </div>
         <div class="form-group">
           <label for="country">Country</label>
-          <input
-            type="text"
+          <select
             name="country"
-            class="form-control"
             id="country"
-            required
             v-model="account.country"
-          />
+            class="form-control"
+          >
+            <option disabled value="">---Select Country---</option>
+            <option value="Vietnam">Viet Nam</option>
+            <option value="Japan">Japan</option>
+            <option value="China">China</option>
+            <option value="USA">American</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="language">Language</label>
@@ -101,9 +106,9 @@
             class="form-control"
           >
             <option disabled value="">---Select Language---</option>
-            <option value="Viet Nam">Viet Nam</option>
-            <option value="Japan">Japan</option>
-            <option value="China">China</option>
+            <option value="English">English</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Chinese">Chinese</option>
           </select>
         </div>
         <div class="form-group">
@@ -133,6 +138,7 @@
 
 <script>
 import AccountDataService from "../services/AccountDataService";
+import App from "../App";
 export default {
   name: "add-account",
   data() {
@@ -166,6 +172,7 @@ export default {
         this.account.lastName.length < 1
       ) {
         this.error = true;
+        this.success = false;
         this.errorMessage = "Please fill out the form";
         return false;
       } else {
@@ -193,9 +200,9 @@ export default {
               this.success = false;
               this.errorMessage = response.data.errorMessage;
             } else if (response.status == 201) {
-              this.success = true;
-              this.error = false;
-              this.successMessage = response.data.successMessage;
+              this.$router.push("/accounts");
+              App.globalSuccess = true;
+              App.globalMessage = "Create Account successfully!";
             }
           })
           .catch((e) => {

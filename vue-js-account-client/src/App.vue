@@ -25,6 +25,13 @@
 <script>
 export default {
   name: "app",
+  data() {
+    return {
+      globalMessage: "",
+      globalSuccess: false,
+      globalError: false,
+    };
+  },
 };
 </script>
 

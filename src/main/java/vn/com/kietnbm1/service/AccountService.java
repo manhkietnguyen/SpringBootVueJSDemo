@@ -12,7 +12,7 @@ public interface AccountService {
 
     AccountDTO findOneById(long id);
 
-    void deleteById(long id);
+    void delete(AccountDTO accountDTO);
 
     List<AccountDTO> findByUsername(String username);
     
