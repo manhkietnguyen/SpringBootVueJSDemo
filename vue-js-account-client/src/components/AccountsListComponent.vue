@@ -1,7 +1,9 @@
 <template>
-  <div class="container" id="listContainer">
+  <div class="container">
     <br />
-    <h4><strong>Accounts List</strong></h4>
+    <h4>
+      <strong>Accounts List</strong>
+    </h4>
     <br />
     <div v-if="success">
       <div class="alert alert-success" style="width: 400px;">{{ message }}</div>
@@ -12,19 +14,23 @@
           type="text"
           class="form-control"
           placeholder="Search by username"
-          v-model="username"
+          v-model="searchUsername"
         />
         <div class="input-group-append">
           <button
-            class="btn btn-outline-secondary"
+            class="btn btn-outline-info"
             type="button"
-            @click="searchUsername"
+            @click="
+              page = 1;
+              retrieveAccounts();
+            "
           >
             <i class="fa fa-search"></i>
           </button>
         </div>
       </div>
     </div>
+
     <table class="table table-striped">
       <thead style="text-align: center;">
         <tr>
@@ -56,63 +62,115 @@
               :href="'/accounts/' + account.id"
               class="btn btn-warning"
               style="margin-right: 10px;"
-              ><i class="fas fa-edit"></i
-            ></a>
-            <button class="btn btn-danger" @click="deleteAccount(account.id)">
+            >
+              <i class="fas fa-edit"></i>
+            </a>
+            <button class="btn btn-danger" @click="showModal(account.id)">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="row" style="width: 90%; margin: auto;">
+      <b-pagination
+        v-model="page"
+        :total-rows="count"
+        :per-page="pageSize"
+        prev-text="Prev"
+        next-text="Next"
+        @change="handlePageChange"
+      ></b-pagination>
+      <div class="mb-3" style="margin-left: auto;">
+        Items per Page:
+        <select v-model="pageSize" @change="handlePageSizeChange($event)">
+          <option v-for="size in pageSizes" :key="size" :value="size">
+            {{ size }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <modal v-show="isModalVisible" @close="closeModal" />
+    </div>
   </div>
 </template>
 
 <script>
 import AccountDataService from "../services/AccountDataService";
 import App from "../App";
+import modal from "../components/Modal";
 
 export default {
-  name: "accounts-list",
+  name: "accounts-list-paging",
+  components: {
+    modal,
+  },
   data() {
     return {
       accounts: [],
       message: App.globalMessage,
       username: "",
       success: App.globalSuccess,
+      isModalVisible: false,
+      searchUsername: "",
+      page: 1,
+      count: 0,
+      pageSize: 3,
+      pageSizes: [3, 6, 9],
     };
   },
   methods: {
+    getRequestParams(page, pageSize, searchUsername) {
+      let params = {};
+      if (searchUsername) {
+        params["username"] = searchUsername;
+      }
+      if (page) {
+        params["page"] = page - 1;
+      }
+      if (pageSize) {
+        params["size"] = pageSize;
+      }
+      return params;
+    },
     retrieveAccounts() {
-      AccountDataService.getAll()
+      const params = this.getRequestParams(
+        this.page,
+        this.pageSize,
+        this.searchUsername
+      );
+
+      AccountDataService.getAllPng(params)
         .then((response) => {
-          this.accounts = response.data;
+          this.accounts = response.data.listAccountDTO;
+          this.count = response.data.totalItems;
+          console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
         });
     },
 
-    refreshList() {
+    handlePageChange(value) {
+      this.page = value;
       this.retrieveAccounts();
     },
 
-    searchUsername() {
-      AccountDataService.findByUsername(this.username)
-        .then((response) => {
-          this.accounts = response.data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+    handlePageSizeChange(event) {
+      this.pageSize = event.target.value;
+      this.page = 1;
+      this.retrieveAccounts;
     },
-    deleteAccount(id) {
-      AccountDataService.delete(id).then((response) => {
-        console.log(response.data);
-        this.refreshList();
-        this.success = true;
-        this.message = "Delete Account Successfully!";
-      });
+
+    showModal(id) {
+      this.isModalVisible = true;
+      App.accountId = id;
+    },
+    closeModal() {
+      this.isModalVisible = false;
     },
   },
   mounted() {

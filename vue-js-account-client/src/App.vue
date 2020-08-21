@@ -30,18 +30,19 @@ export default {
       globalMessage: "",
       globalSuccess: false,
       globalError: false,
+      accountId: "",
     };
   },
 };
 </script>
 
 <style>
-@import url(https://unpkg.com/bootstrap@4.1.0/dist/css/bootstrap.min.css);
+/* @import url(https://unpkg.com/bootstrap@4.1.0/dist/css/bootstrap.min.css); */
 @import url(https://use.fontawesome.com/releases/v5.6.3/css/all.css);
 body {
   background-color: gray;
 }
 .container {
-  background-color: white;
+  background-color: wheat;
 }
 </style>

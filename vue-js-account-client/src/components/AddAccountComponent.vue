@@ -1,16 +1,14 @@
 <template>
   <div class="submit-form">
     <br />
-    <h4><strong>Add Account</strong></h4>
+    <h4>
+      <strong>Add Account</strong>
+    </h4>
     <div v-if="error">
-      <div class="alert alert-danger" style="width: 400px;">
-        {{ errorMessage }}
-      </div>
+      <div class="alert alert-danger" style="width: 400px;">{{ errorMessage }}</div>
     </div>
     <div v-if="success">
-      <div class="alert alert-success" style="width: 400px;">
-        {{ successMessage }}
-      </div>
+      <div class="alert alert-success" style="width: 400px;">{{ successMessage }}</div>
     </div>
     <div class="row">
       <div class="col-6">
@@ -84,13 +82,8 @@
         </div>
         <div class="form-group">
           <label for="country">Country</label>
-          <select
-            name="country"
-            id="country"
-            v-model="account.country"
-            class="form-control"
-          >
-            <option disabled value="">---Select Country---</option>
+          <select name="country" id="country" v-model="account.country" class="form-control">
+            <option disabled value>---Select Country---</option>
             <option value="Vietnam">Viet Nam</option>
             <option value="Japan">Japan</option>
             <option value="China">China</option>
@@ -99,13 +92,8 @@
         </div>
         <div class="form-group">
           <label for="language">Language</label>
-          <select
-            name="language"
-            id="language"
-            v-model="account.language"
-            class="form-control"
-          >
-            <option disabled value="">---Select Language---</option>
+          <select name="language" id="language" v-model="account.language" class="form-control">
+            <option disabled value>---Select Language---</option>
             <option value="English">English</option>
             <option value="Japanese">Japanese</option>
             <option value="Chinese">Chinese</option>
@@ -113,13 +101,8 @@
         </div>
         <div class="form-group">
           <label for="role">Role</label>
-          <select
-            name="role"
-            id="role"
-            v-model="account.role"
-            class="form-control"
-          >
-            <option disabled value="">---Select Role---</option>
+          <select name="role" id="role" v-model="account.role" class="form-control">
+            <option disabled value>---Select Role---</option>
             <option value="ROLE_ADMIN">ADMIN</option>
             <option value="ROLE_USER">USER</option>
           </select>
@@ -139,6 +122,7 @@
 <script>
 import AccountDataService from "../services/AccountDataService";
 import App from "../App";
+
 export default {
   name: "add-account",
   data() {

@@ -3,6 +3,8 @@ package vn.com.kietnbm1.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.com.kietnbm1.dto.AccountDTO;
+import vn.com.kietnbm1.dto.output.AccountOutput;
 import vn.com.kietnbm1.service.AccountService;
 
 @CrossOrigin(origins = "http://localhost:8081")
@@ -107,6 +110,31 @@ public class AccountController {
             return new ResponseEntity<>(accountData, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/accountsPng")
+    public AccountOutput showAccount(
+            @RequestParam(required = false) String username,
+            @RequestParam("page") int page, @RequestParam("size") int size) {
+        AccountOutput result = new AccountOutput();
+        result.setPage(page);
+        Pageable pageable = new PageRequest(page, size);
+
+        if (username == null) {
+            result.setListAccountDTO(accountService.findAll(pageable));
+            result.setTotalPages((int) Math
+                    .ceil((double) (accountService.totalItem()) / size));
+            result.setTotalItems(accountService.totalItem());
+            return result;
+        } else {
+            result.setListAccountDTO(accountService
+                    .findByUsernameContaining(username, pageable));
+            result.setTotalPages((int) Math.ceil(
+                    (double) (accountService.totalItemByUsername(username))
+                            / size));
+            result.setTotalItems(accountService.totalItemByUsername(username));
+            return result;
         }
     }
 }

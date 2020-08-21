@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.com.kietnbm1.converter.AccountConverter;
@@ -93,13 +94,51 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountDTO> findByUsername(String username) {
         List<AccountDTO> accountDTOs = new ArrayList<>();
-        List<Account> accounts = accountRepository.findByUsernameContaining(username);
+        List<Account> accounts = accountRepository
+                .findByUsernameContaining(username);
         for (Account account : accounts) {
             AccountDTO dto = new AccountDTO();
             dto = accountConverter.toDTO(account);
             accountDTOs.add(dto);
         }
         return accountDTOs;
+    }
+
+    @Override
+    public int totalItem() {
+        return (int) accountRepository.count();
+    }
+
+    @Override
+    public List<AccountDTO> findAll(Pageable pageable) {
+        List<AccountDTO> results = new ArrayList<>();
+        List<Account> accounts = accountRepository.findAll(pageable)
+                .getContent();
+        for (Account account : accounts) {
+            AccountDTO dto = accountConverter.toDTO(account);
+            results.add(dto);
+        }
+        return results;
+    }
+
+    @Override
+    public List<AccountDTO> findByUsernameContaining(String username,
+            Pageable pageable) {
+        List<AccountDTO> results = new ArrayList<>();
+        List<Account> accounts = accountRepository
+                .findByUsernameContaining(username, pageable).getContent();
+        for (Account account : accounts) {
+            AccountDTO dto = accountConverter.toDTO(account);
+            results.add(dto);
+        }
+        return results;
+    }
+
+    @Override
+    public int totalItemByUsername(String username) {
+        List<Account> accounts = accountRepository
+                .findByUsernameContaining(username);
+        return accounts.size();
     }
 
 }
