@@ -12,15 +12,5 @@ export default new Router({
       name: "accounts",
       component: () => import("./components/AccountsListComponent"),
     },
-    {
-      path: "/addAccount",
-      name: "add",
-      component: () => import("./components/AddAccountComponent"),
-    },
-    {
-      path: "/accounts/:id",
-      name: "account-details",
-      component: () => import("./components/EditAccountComponent"),
-    },
   ],
 });
