@@ -63,6 +63,11 @@ public class AccountServiceImpl implements AccountService {
             account.setCompanyName(accountDTO.getCompanyName());
             account.setCountry(accountDTO.getCountry());
             account.setLanguage(accountDTO.getLanguage());
+            if (accountDTO.getActive().equals("Yes")) {
+                account.setActive(true);
+            } else {
+                account.setActive(false);
+            }
             Role role = roleRepository.findByName(accountDTO.getRole());
             account.setRole(role);
             return accountConverter.toDTO(accountRepository.save(account));

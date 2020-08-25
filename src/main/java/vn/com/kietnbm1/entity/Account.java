@@ -44,7 +44,7 @@ public class Account {
     private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", updatable = false)
+    @JoinColumn(name = "role_id")
     private Role role;
 
     public Account() {

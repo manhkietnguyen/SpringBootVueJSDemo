@@ -24,6 +24,10 @@ class AccountDataService {
   findByUsername(username) {
     return http.get(`/accounts?username=${username}`);
   }
+
+  getAllPng(params) {
+    return http.get("/accountsPng", { params });
+  }
 }
 
 export default new AccountDataService();

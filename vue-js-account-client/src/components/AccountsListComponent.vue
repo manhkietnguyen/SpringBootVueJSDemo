@@ -8,8 +8,11 @@
     <div v-if="success">
       <div class="alert alert-success" style="width: 400px;">{{ message }}</div>
     </div>
-    <div class="col-md-4" id="searchUsername">
-      <div class="input-group mb-3">
+    <div class="row">
+      <div class="col-md-4" style="float: left;">
+        <button class="btn btn-primary" @click="showAddModal">Add Account</button>
+      </div>
+      <div class="input-group col-md-4 offset-md-4" style="float: right;">
         <input
           type="text"
           class="form-control"
@@ -30,7 +33,7 @@
         </div>
       </div>
     </div>
-
+    <hr />
     <table class="table table-striped">
       <thead style="text-align: center;">
         <tr>
@@ -58,14 +61,17 @@
           <td>{{ account.role }}</td>
           <td>{{ account.active }}</td>
           <td>
-            <a
+            <!-- <a
               :href="'/accounts/' + account.id"
               class="btn btn-warning"
               style="margin-right: 10px;"
             >
               <i class="fas fa-edit"></i>
-            </a>
-            <button class="btn btn-danger" @click="showModal(account.id)">
+            </a>-->
+            <button class="btn btn-warning" @click="showEditModal(account.id)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger" @click="showDeleteModal(account.id)">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
@@ -85,35 +91,48 @@
       <div class="mb-3" style="margin-left: auto;">
         Items per Page:
         <select v-model="pageSize" @change="handlePageSizeChange($event)">
-          <option v-for="size in pageSizes" :key="size" :value="size">
-            {{ size }}
-          </option>
+          <option v-for="size in pageSizes" :key="size" :value="size">{{ size }}</option>
         </select>
       </div>
     </div>
 
     <div>
-      <modal v-show="isModalVisible" @close="closeModal" />
+      <delete-modal
+        ref="newModal"
+        :accountid="accountId"
+        @deleteAccount="deleteAccount(id = $event)"
+      ></delete-modal>
+    </div>
+    <div>
+      <add-modal ref="addModal" @addAccount="retrieveAccounts" @success="addSuccess"></add-modal>
+    </div>
+    <div>
+      <edit-modal ref="editModal" :account="account" @success="editSuccess"></edit-modal>
     </div>
   </div>
 </template>
 
 <script>
 import AccountDataService from "../services/AccountDataService";
-import App from "../App";
-import modal from "../components/Modal";
+import DeleteModal from "../components/DeleteModal";
+import AddModal from "../components/AddAccountModal";
+import EditModal from "../components/EditAccountModal";
 
 export default {
   name: "accounts-list-paging",
   components: {
-    modal,
+    deleteModal: DeleteModal,
+    addModal: AddModal,
+    editModal: EditModal,
   },
   data() {
     return {
       accounts: [],
-      message: App.globalMessage,
+      account: [],
+      message: "",
       username: "",
-      success: App.globalSuccess,
+      accountId: "",
+      success: "",
       isModalVisible: false,
       searchUsername: "",
       page: 1,
@@ -162,15 +181,42 @@ export default {
     handlePageSizeChange(event) {
       this.pageSize = event.target.value;
       this.page = 1;
-      this.retrieveAccounts;
+      this.retrieveAccounts();
     },
 
-    showModal(id) {
-      this.isModalVisible = true;
-      App.accountId = id;
+    showDeleteModal(id) {
+      this.accountId = id;
+      this.$refs.newModal.showModal();
     },
-    closeModal() {
-      this.isModalVisible = false;
+
+    showAddModal() {
+      this.$refs.addModal.showAddModal();
+    },
+    deleteAccount(id) {
+      AccountDataService.delete(id)
+        .then(() => {
+          this.retrieveAccounts();
+          this.success = true;
+          this.message = "Delete Account Successfully!";
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    addSuccess() {
+      this.success = true;
+      this.message = "Add Account Successfully!";
+    },
+    showEditModal(id) {
+      AccountDataService.get(id).then((response) => {
+        this.account = response.data;
+      });
+      this.$refs.editModal.showEditModal();
+    },
+    editSuccess() {
+      this.success = true;
+      this.message = "Account was updated successfully!";
+      this.retrieveAccounts();
     },
   },
   mounted() {
@@ -183,10 +229,10 @@ export default {
 h4 {
   text-align: center;
 }
-
+/* 
 #searchUsername {
   float: right;
-}
+} */
 
 #listContainer {
   height: 1000px;
